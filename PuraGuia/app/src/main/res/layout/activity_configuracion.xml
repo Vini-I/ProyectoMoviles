@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pg_bg"
+    android:orientation="vertical">
+
+    <include layout="@layout/include_header" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Cuenta -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/PG.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_header_teal"
+                        android:fontFamily="sans-serif-medium"
+                        android:paddingStart="18dp"
+                        android:paddingTop="14dp"
+                        android:paddingEnd="18dp"
+                        android:paddingBottom="14dp"
+                        android:text="Cuenta"
+                        android:textColor="@color/white"
+                        android:textSize="17sp" />
+
+                    <LinearLayout
+                        android:id="@+id/row_editar_perfil"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="42dp"
+                            android:layout_height="42dp"
+                            android:background="@drawable/bg_icon_square"
+                            android:contentDescription="Editar Perfil"
+                            android:padding="10dp"
+                            android:src="@drawable/ic_person"
+                            app:tint="@color/pg_teal" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:layout_weight="1"
+                            android:text="Editar Perfil"
+                            android:textColor="@color/pg_text"
+                            android:textSize="15sp" />
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:contentDescription="Abrir"
+                            android:src="@drawable/ic_chevron_right"
+                            app:tint="@color/pg_text_hint" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@drawable/bg_divider" />
+
+                    <LinearLayout
+                        android:id="@+id/row_cambiar_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="42dp"
+                            android:layout_height="42dp"
+                            android:background="@drawable/bg_act_blue"
+                            android:contentDescription="Cambiar Contraseña"
+                            android:padding="10dp"
+                            android:src="@drawable/ic_key"
+                            app:tint="@color/pg_blue" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="14dp"
+                            android:layout_weight="1"
+                            android:text="Cambiar Contraseña"
+                            android:textColor="@color/pg_text"
+                            android:textSize="15sp" />
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:contentDescription="Abrir"
+                            android:src="@drawable/ic_chevron_right"
+                            app:tint="@color/pg_text_hint" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Notificaciones -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/PG.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_header_blue"
+                        android:fontFamily="sans-serif-medium"
+                        android:paddingStart="18dp"
+                        android:paddingTop="14dp"
+                        android:paddingEnd="18dp"
+                        android:paddingBottom="14dp"
+                        android:text="Notificaciones"
+                        android:textColor="@color/white"
+                        android:textSize="17sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Email"
+                                android:textColor="@color/pg_text"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Recibir notificaciones por email"
+                                android:textColor="@color/pg_text_muted"
+                                android:textSize="13sp" />
+                        </LinearLayout>
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switch_email"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@drawable/bg_divider" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Push"
+                                android:textColor="@color/pg_text"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Notificaciones push en el dispositivo"
+                                android:textColor="@color/pg_text_muted"
+                                android:textSize="13sp" />
+                        </LinearLayout>
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switch_push"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@drawable/bg_divider" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Ofertas"
+                                android:textColor="@color/pg_text"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Ofertas y promociones especiales"
+                                android:textColor="@color/pg_text_muted"
+                                android:textSize="13sp" />
+                        </LinearLayout>
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switch_ofertas"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="false" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Preferencias -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/PG.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_header_teal"
+                        android:fontFamily="sans-serif-medium"
+                        android:paddingStart="18dp"
+                        android:paddingTop="14dp"
+                        android:paddingEnd="18dp"
+                        android:paddingBottom="14dp"
+                        android:text="Preferencias"
+                        android:textColor="@color/white"
+                        android:textSize="17sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            style="@style/PG.Label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Idioma" />
+
+                        <Spinner
+                            android:id="@+id/spinner_idioma"
+                            style="@style/PG.Spinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="52dp"
+                            android:layout_marginTop="6dp"
+                            android:entries="@array/idiomas_app" />
+
+                        <TextView
+                            style="@style/PG.Label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="14dp"
+                            android:text="Moneda" />
+
+                        <Spinner
+                            android:id="@+id/spinner_moneda"
+                            style="@style/PG.Spinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="52dp"
+                            android:layout_marginTop="6dp"
+                            android:entries="@array/monedas" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Privacidad y Seguridad -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/PG.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_header_blue"
+                        android:fontFamily="sans-serif-medium"
+                        android:paddingStart="18dp"
+                        android:paddingTop="14dp"
+                        android:paddingEnd="18dp"
+                        android:paddingBottom="14dp"
+                        android:text="Privacidad y Seguridad"
+                        android:textColor="@color/white"
+                        android:textSize="17sp" />
+
+                    <LinearLayout
+                        android:id="@+id/row_privacidad"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="18dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Política de Privacidad"
+                            android:textColor="@color/pg_text"
+                            android:textSize="15sp" />
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:contentDescription="Abrir"
+                            android:src="@drawable/ic_chevron_right"
+                            app:tint="@color/pg_text_hint" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@drawable/bg_divider" />
+
+                    <LinearLayout
+                        android:id="@+id/row_terminos"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="18dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Términos y Condiciones"
+                            android:textColor="@color/pg_text"
+                            android:textSize="15sp" />
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:contentDescription="Abrir"
+                            android:src="@drawable/ic_chevron_right"
+                            app:tint="@color/pg_text_hint" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Zona de Peligro -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/PG.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="20dp"
+                app:strokeColor="#FECACA"
+                app:strokeWidth="1.5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_header_danger"
+                        android:fontFamily="sans-serif-medium"
+                        android:paddingStart="18dp"
+                        android:paddingTop="14dp"
+                        android:paddingEnd="18dp"
+                        android:paddingBottom="14dp"
+                        android:text="Zona de Peligro"
+                        android:textColor="#991B1B"
+                        android:textSize="17sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="18dp">
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btn_eliminar_cuenta"
+                            style="@style/PG.Button.Danger"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Eliminar Cuenta" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:gravity="center"
+                            android:text="Esta acción es permanente y no se puede deshacer"
+                            android:textColor="@color/pg_text_muted"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+
+    <color name="pg_teal">#009688</color>
+    <color name="pg_teal_dark">#00796B</color>
+    <color name="pg_teal_light">#00BFA5</color>
+    <color name="pg_blue">#0891B2</color>
+    <color name="pg_blue_light">#00B8D9</color>
+    <color name="pg_sky">#0EA5E9</color>
+    <color name="pg_bg">#F0FFFE</color>
+    <color name="pg_text">#1F2937</color>
+    <color name="pg_text_muted">#6B7280</color>
+    <color name="pg_text_hint">#9CA3AF</color>
+    <color name="pg_border">#D1D5DB</color>
+    <color name="pg_red">#DC2626</color>
+    <color name="pg_amber">#FBBF24</color>
+    <color name="pg_green">#16A34A</color>
+</resources>

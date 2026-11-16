@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.PuraGuia">
+
+        <!-- Splash: pantalla de arranque -->
+        <activity
+            android:name=".ui.splash.SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.PuraGuia.Splash">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Navegación principal (Inicio, Buscar, Mensajes, Perfil) -->
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:exported="false" />
+
+        <!-- Autenticación -->
+        <activity
+            android:name=".ui.auth.LoginActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.auth.RegisterRoleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.RegisterTouristActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.auth.RegisterGuideActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Tours -->
+        <activity
+            android:name=".ui.tour.TourDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.tour.ReservaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.tour.GuideProfileActivity"
+            android:exported="false" />
+
+        <!-- Mensajería -->
+        <activity
+            android:name=".ui.chat.ChatActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Perfil -->
+        <activity
+            android:name=".ui.profile.FavoritosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.profile.MetodosPagoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.profile.ConfiguracionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.profile.ActividadRecienteActivity"
+            android:exported="false" />
+    </application>
+
+</manifest>

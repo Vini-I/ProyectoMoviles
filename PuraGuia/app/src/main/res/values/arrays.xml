@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="paises">
+        <item>Selecciona tu país</item>
+        <item>Costa Rica</item>
+        <item>Estados Unidos</item>
+        <item>Canadá</item>
+        <item>México</item>
+        <item>Colombia</item>
+        <item>Argentina</item>
+        <item>Chile</item>
+        <item>Brasil</item>
+        <item>España</item>
+        <item>Francia</item>
+        <item>Alemania</item>
+        <item>Italia</item>
+        <item>Reino Unido</item>
+        <item>Países Bajos</item>
+        <item>Otro</item>
+    </string-array>
+
+    <string-array name="provincias_filtro">
+        <item>Todas las provincias</item>
+        <item>San José</item>
+        <item>Alajuela</item>
+        <item>Cartago</item>
+        <item>Heredia</item>
+        <item>Guanacaste</item>
+        <item>Puntarenas</item>
+        <item>Limón</item>
+    </string-array>
+
+    <string-array name="orden_opciones">
+        <item>Más relevante</item>
+        <item>Menor precio</item>
+        <item>Mayor precio</item>
+        <item>Mejor valorados</item>
+    </string-array>
+
+    <string-array name="idiomas_app">
+        <item>Español</item>
+        <item>English</item>
+    </string-array>
+
+    <string-array name="monedas">
+        <item>USD ($)</item>
+        <item>CRC (₡)</item>
+        <item>EUR (€)</item>
+    </string-array>
+</resources>

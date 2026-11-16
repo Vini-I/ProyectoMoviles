@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pg_bg"
+    android:orientation="vertical">
+
+    <include layout="@layout/include_header" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Foto de perfil -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/PG.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        style="@style/PG.Label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Foto de Perfil" />
+
+                    <ImageView
+                        android:id="@+id/img_foto"
+                        android:layout_width="104dp"
+                        android:layout_height="104dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_circle_light"
+                        android:clipToOutline="true"
+                        android:contentDescription="Foto de perfil"
+                        android:padding="28dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_person"
+                        app:tint="@color/pg_blue_light" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_subir_foto"
+                        style="@style/PG.Button.Blue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:minHeight="40dp"
+                        android:paddingStart="24dp"
+                        android:paddingEnd="24dp"
+                        android:text="Subir foto"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Información básica -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/PG.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_marginTop="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Información Básica"
+                        android:textAppearance="@style/PG.CardTitle" />
+
+                    <TextView
+                        style="@style/PG.Label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:text="Nombre Completo" />
+
+                    <EditText
+                        android:id="@+id/edit_nombre"
+                        style="@style/PG.Input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:hint="Juan Pérez Mora"
+                        android:importantForAutofill="no"
+                        android:inputType="textPersonName|textCapWords"
+                        android:maxLines="1" />
+
+                    <TextView
+                        style="@style/PG.Label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:text="Email" />
+
+                    <EditText
+                        android:id="@+id/edit_email"
+                        style="@style/PG.Input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:hint="juan@email.com"
+                        android:importantForAutofill="no"
+                        android:inputType="textEmailAddress"
+                        android:maxLines="1" />
+
+                    <TextView
+                        style="@style/PG.Label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:text="Teléfono" />
+
+                    <EditText
+                        android:id="@+id/edit_telefono"
+                        style="@style/PG.Input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:hint="+506 8888-8888"
+                        android:importantForAutofill="no"
+                        android:inputType="phone"
+                        android:maxLines="1" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Seguridad -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/PG.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_marginTop="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Seguridad"
+                        android:textAppearance="@style/PG.CardTitle" />
+
+                    <TextView
+                        style="@style/PG.Label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:text="Contraseña" />
+
+                    <EditText
+                        android:id="@+id/edit_password"
+                        style="@style/PG.Input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:hint="••••••••"
+                        android:importantForAutofill="no"
+                        android:inputType="textPassword"
+                        android:maxLines="1" />
+
+                    <TextView
+                        style="@style/PG.Label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:text="Confirmar contraseña" />
+
+                    <EditText
+                        android:id="@+id/edit_confirmar"
+                        style="@style/PG.Input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:hint="••••••••"
+                        android:importantForAutofill="no"
+                        android:inputType="textPassword"
+                        android:maxLines="1" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Idiomas -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/PG.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_marginTop="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Idiomas"
+                        android:textAppearance="@style/PG.CardTitle" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Seleccione múltiple"
+                        android:textColor="@color/pg_text_muted"
+                        android:textSize="13sp" />
+
+                    <GridLayout
+                        android:id="@+id/grid_idiomas"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Ubicaciones -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/PG.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_marginTop="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ubicaciones"
+                        android:textAppearance="@style/PG.CardTitle" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Seleccione múltiple"
+                        android:textColor="@color/pg_text_muted"
+                        android:textSize="13sp" />
+
+                    <GridLayout
+                        android:id="@+id/grid_ubicaciones"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Certificaciones -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/PG.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_marginTop="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Certificaciones"
+                        android:textAppearance="@style/PG.CardTitle" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Sube tus certificados y credenciales"
+                        android:textColor="@color/pg_text_muted"
+                        android:textSize="13sp" />
+
+                    <LinearLayout
+                        android:id="@+id/btn_subir_certificado"
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_dashed_upload"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:contentDescription="Subir archivo"
+                            android:src="@drawable/ic_cloud_upload"
+                            app:tint="@color/pg_blue" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text="Upload File"
+                            android:textColor="@color/pg_text"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/container_certificados"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:orientation="vertical" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Botones -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
+                android:paddingBottom="16dp">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_cancelar"
+                    style="@style/PG.Button.OutlineGray"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:text="Cancelar" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_registrar"
+                    style="@style/PG.Button.Blue"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1.3"
+                    android:text="Registrar" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
