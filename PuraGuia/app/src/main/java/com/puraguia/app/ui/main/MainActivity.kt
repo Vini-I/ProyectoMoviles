@@ -81,12 +81,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** Punto rojo de mensajes nuevos (solo con sesión). TODO(equipo mensajería): usar mensajes sin leer reales. */
+    /** Punto rojo con la cantidad real de mensajes sin leer desde SQLite. */
+    fun refrescarBadgeMensajes() {
+        actualizarBadgeMensajes()
+    }
+
     private fun actualizarBadgeMensajes() {
         if (session.isLoggedIn()) {
-            val badge = bottomNav.getOrCreateBadge(R.id.nav_messages)
-            badge.backgroundColor = Color.parseColor("#EF4444")
-            badge.isVisible = true
+            val sinLeer = com.puraguia.app.data.MensajeriaDao(this)
+                .contarTotalNoLeidos(session.getUserId())
+            if (sinLeer > 0) {
+                val badge = bottomNav.getOrCreateBadge(R.id.nav_messages)
+                badge.backgroundColor = Color.parseColor("#EF4444")
+                badge.number = sinLeer
+                badge.isVisible = true
+            } else {
+                bottomNav.removeBadge(R.id.nav_messages)
+            }
         } else {
             bottomNav.removeBadge(R.id.nav_messages)
         }
