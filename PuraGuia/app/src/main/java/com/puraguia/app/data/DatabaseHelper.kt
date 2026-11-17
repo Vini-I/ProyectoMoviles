@@ -30,17 +30,22 @@ class DatabaseHelper private constructor(context: Context) :
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(CREATE_USUARIOS)
+        db.execSQL(CREATE_TOURS)
         // TODO(equipo): db.execSQL(CREATE_TOURS), db.execSQL(CREATE_RESERVAS), ...
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        // Ejemplo de cómo agregar una tabla en la versión 2:
+        if(oldVersion < 2){
+            db.execSQL(CREATE_TOURS)
+        }
+         // Ejemplo de cómo agregar una tabla en la versión 2:
         // if (oldVersion < 2) { db.execSQL(CREATE_TOURS) }
     }
 
     companion object {
         const val DB_NAME = "pura_guia.db"
-        const val DB_VERSION = 1
+        const val DB_VERSION = 2
+        const val TABLA_TOURS ="tours"
 
         // ---------- Tabla: usuarios ----------
         const val TABLA_USUARIOS = "usuarios"
@@ -67,7 +72,7 @@ class DatabaseHelper private constructor(context: Context) :
                 "email TEXT NOT NULL UNIQUE, " +
                 "telefono TEXT NOT NULL, " +
                 "pais TEXT, " +
-                "intereses TEXT, " +
+                "intereses TEXT," +
                 "idiomas TEXT, " +
                 "ubicaciones TEXT, " +
                 "certificaciones TEXT, " +
@@ -76,6 +81,9 @@ class DatabaseHelper private constructor(context: Context) :
                 "salt TEXT NOT NULL, " +
                 "fecha_registro INTEGER NOT NULL" +
                 ")"
+
+        private const val CREATE_TOURS =
+            "CREATE  TABLE IF NOT EXISTS Tours("+ "id INTEGER PRIMARY KEY AUTOINCREMENT, " + "guia_id INTEGER NOT NULL," + "titulo TEXT NOT NULL," + "lugar TEXT NOT NULL," + "precio INTEGER NOT NULL," +"categoria TEXT NOT NULL," + "duracion TEXT NOT NULL," + "cuidados TEXT NOT NULL," +"FOREIGN KEY (guia_id)REFERENCES usuarios(id)"+ ")"
 
         @Volatile
         private var instance: DatabaseHelper? = null
