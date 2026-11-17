@@ -19,6 +19,68 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+
+            <!-- Configuración del guía -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/PG.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Configuración del guía"
+                        android:textColor="@color/pg_teal"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:paddingBottom="12dp" />
+
+                    <EditText
+                        android:id="@+id/et_pais_guia"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="País"
+                        android:inputType="textCapWords" />
+
+                    <EditText
+                        android:id="@+id/et_idiomas_guia"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Idiomas (separados por comas)"
+                        android:inputType="textCapSentences" />
+
+                    <EditText
+                        android:id="@+id/et_ubicaciones_guia"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Ubicaciones donde ofrece tours"
+                        android:inputType="textCapSentences" />
+
+                    <EditText
+                        android:id="@+id/et_certificaciones_guia"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Certificaciones"
+                        android:inputType="textCapSentences" />
+
+                    <Button
+                        android:id="@+id/btn_guardar_config_guia"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Guardar configuración" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+
             <!-- Cuenta -->
             <com.google.android.material.card.MaterialCardView
                 style="@style/PG.Card"
