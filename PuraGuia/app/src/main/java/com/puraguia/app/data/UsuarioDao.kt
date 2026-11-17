@@ -167,6 +167,36 @@ class UsuarioDao(context: Context) {
     }
 
     /**
+     * Actualiza los datos específicos del guía.
+     */
+    fun actualizarConfiguracionGuia(
+        id: Long,
+        pais: String,
+        idiomas: List<String>,
+        ubicaciones: List<String>,
+        certificaciones: List<String>
+    ): Boolean {
+        val valores = ContentValues().apply {
+            put(DatabaseHelper.COL_PAIS, pais.trim())
+            put(DatabaseHelper.COL_IDIOMAS, unir(idiomas))
+            put(DatabaseHelper.COL_UBICACIONES, unir(ubicaciones))
+            put(DatabaseHelper.COL_CERTIFICACIONES, unir(certificaciones))
+        }
+
+        return try {
+            val filas = helper.writableDatabase.update(
+                DatabaseHelper.TABLA_USUARIOS,
+                valores,
+                "${DatabaseHelper.COL_ID} = ?",
+                arrayOf(id.toString())
+            )
+            filas > 0
+        } catch (e: SQLiteException) {
+            false
+        }
+    }
+
+    /**
      * Verifica la contraseña actual y, si coincide, guarda una nueva contraseña con un salt nuevo.
      * Devuelve true si se actualizó correctamente.
      */
