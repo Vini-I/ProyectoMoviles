@@ -1,4 +1,3 @@
-
 package com.puraguia.app.ui.profile
 
 import android.os.Bundle
@@ -36,6 +35,9 @@ class ConfiguracionActivity : AppCompatActivity() {
         usuarioDao = UsuarioDao(this)
         session = SessionManager(this)
 
+        // Configuración específica del guía
+        configurarDatosGuia()
+
         // Editar perfil
         findViewById<View>(R.id.row_editar_perfil).setOnClickListener {
             mostrarDialogoEditarPerfil()
@@ -65,6 +67,81 @@ class ConfiguracionActivity : AppCompatActivity() {
         // Eliminar cuenta
         findViewById<View>(R.id.btn_eliminar_cuenta).setOnClickListener {
             confirmarEliminarCuenta()
+        }
+    }
+
+    // CONFIGURACIÓN DEL GUÍA
+    private fun configurarDatosGuia() {
+
+        val etPais = findViewById<EditText>(R.id.et_pais_guia)
+        val etIdiomas = findViewById<EditText>(R.id.et_idiomas_guia)
+        val etUbicaciones = findViewById<EditText>(R.id.et_ubicaciones_guia)
+        val etCertificaciones = findViewById<EditText>(R.id.et_certificaciones_guia)
+        val btnGuardar = findViewById<View>(R.id.btn_guardar_config_guia)
+
+        val usuarioId = session.getUserId()
+        val usuario = usuarioDao.obtenerPorId(usuarioId)
+
+        if (usuario == null || !usuario.esGuia) {
+            etPais.visibility = View.GONE
+            etIdiomas.visibility = View.GONE
+            etUbicaciones.visibility = View.GONE
+            etCertificaciones.visibility = View.GONE
+            btnGuardar.visibility = View.GONE
+            return
+        }
+
+        // Cargar datos guardados
+        etPais.setText(usuario.pais)
+        etIdiomas.setText(usuario.idiomas.joinToString(", "))
+        etUbicaciones.setText(usuario.ubicaciones.joinToString(", "))
+        etCertificaciones.setText(usuario.certificaciones.joinToString(", "))
+
+        btnGuardar.setOnClickListener {
+
+            val pais = etPais.text.toString().trim()
+
+            val idiomas = etIdiomas.text.toString()
+                .split(",")
+                .map { it.trim() }
+                .filter { it.isNotEmpty() }
+
+            val ubicaciones = etUbicaciones.text.toString()
+                .split(",")
+                .map { it.trim() }
+                .filter { it.isNotEmpty() }
+
+            val certificaciones = etCertificaciones.text.toString()
+                .split(",")
+                .map { it.trim() }
+                .filter { it.isNotEmpty() }
+
+            if (pais.isBlank() || idiomas.isEmpty() ||
+                ubicaciones.isEmpty() || certificaciones.isEmpty()
+            ) {
+                toast("Completa todos los campos")
+                return@setOnClickListener
+            }
+
+            val actualizado = usuarioDao.actualizarConfiguracionGuia(
+                usuarioId,
+                pais,
+                idiomas,
+                ubicaciones,
+                certificaciones
+            )
+
+            if (actualizado) {
+
+                usuarioDao.obtenerPorId(usuarioId)?.let {
+                    session.guardarSesion(it)
+                }
+
+                toast("Configuración actualizada correctamente")
+
+            } else {
+                toast("No se pudo actualizar la configuración")
+            }
         }
     }
 
