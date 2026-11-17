@@ -82,6 +82,61 @@ class UsuarioDao(context: Context) {
         ).use { cursor -> if (cursor.moveToFirst()) cursorAUsuario(cursor) else null }
     }
 
+    /** Busca un usuario por su nombre exacto (o coincidencia parcial sin distinguir mayúsculas). */
+    fun obtenerPorNombre(nombre: String): Usuario? {
+        val limpio = nombre.trim()
+        helper.readableDatabase.query(
+            DatabaseHelper.TABLA_USUARIOS,
+            null,
+            "LOWER(${DatabaseHelper.COL_NOMBRE}) = LOWER(?)",
+            arrayOf(limpio),
+            null, null, null
+        ).use { cursor ->
+            if (cursor.moveToFirst()) return cursorAUsuario(cursor)
+        }
+        return helper.readableDatabase.query(
+            DatabaseHelper.TABLA_USUARIOS,
+            null,
+            "LOWER(${DatabaseHelper.COL_NOMBRE}) LIKE LOWER(?)",
+            arrayOf("%$limpio%"),
+            null, null, null
+        ).use { cursor -> if (cursor.moveToFirst()) cursorAUsuario(cursor) else null }
+    }
+
+    /** Devuelve todos los guías registrados en la base de datos. */
+    fun obtenerGuias(): List<Usuario> {
+        val lista = mutableListOf<Usuario>()
+        helper.readableDatabase.query(
+            DatabaseHelper.TABLA_USUARIOS,
+            null,
+            "${DatabaseHelper.COL_ROL} = ?",
+            arrayOf(Usuario.ROL_GUIA),
+            null, null, "${DatabaseHelper.COL_NOMBRE} ASC"
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                lista.add(cursorAUsuario(cursor))
+            }
+        }
+        return lista
+    }
+
+    /** Devuelve otros usuarios registrados (excluyendo el usuario actual) para iniciar conversaciones. */
+    fun obtenerContactosDisponibles(excluirUsuarioId: Long): List<Usuario> {
+        val lista = mutableListOf<Usuario>()
+        helper.readableDatabase.query(
+            DatabaseHelper.TABLA_USUARIOS,
+            null,
+            "${DatabaseHelper.COL_ID} != ?",
+            arrayOf(excluirUsuarioId.toString()),
+            null, null, "${DatabaseHelper.COL_ROL} ASC, ${DatabaseHelper.COL_NOMBRE} ASC"
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                lista.add(cursorAUsuario(cursor))
+            }
+        }
+        return lista
+    }
+
     /** Elimina el usuario. Devuelve true si se eliminó. */
     fun eliminar(id: Long): Boolean {
         val filas = helper.writableDatabase.delete(
