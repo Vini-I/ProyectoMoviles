@@ -71,6 +71,9 @@
         <activity
             android:name=".ui.profile.ActividadRecienteActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.profile.AgregarTourActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
