@@ -122,6 +122,7 @@
                             android:src="@drawable/ic_chevron_right"
                             app:tint="@color/pg_text_hint" />
                     </LinearLayout>
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -159,27 +160,6 @@
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:padding="16dp">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Email"
-                                android:textColor="@color/pg_text"
-                                android:textSize="15sp" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Recibir notificaciones por email"
-                                android:textColor="@color/pg_text_muted"
-                                android:textSize="13sp" />
-                        </LinearLayout>
 
                         <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/switch_email"
@@ -259,6 +239,27 @@
                                 android:text="Ofertas y promociones especiales"
                                 android:textColor="@color/pg_text_muted"
                                 android:textSize="13sp" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Email"
+                                    android:textColor="@color/pg_text"
+                                    android:textSize="15sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Recibir notificaciones por email"
+                                    android:textColor="@color/pg_text_muted"
+                                    android:textSize="13sp" />
+                            </LinearLayout>
                         </LinearLayout>
 
                         <androidx.appcompat.widget.SwitchCompat
