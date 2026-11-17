@@ -10,12 +10,17 @@ import android.widget.ArrayAdapter
 import android.widget.GridLayout
 import android.widget.Spinner
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.puraguia.app.R
-import com.puraguia.app.data.SampleData
+import com.puraguia.app.data.ActividadDao
+import com.puraguia.app.data.ReservaDao
+import com.puraguia.app.data.TourDAO
+import com.puraguia.app.model.TipoActividad
 import com.puraguia.app.model.Tour
 import com.puraguia.app.util.ChipGrid
+import com.puraguia.app.util.SessionManager
 import com.puraguia.app.util.dp
 import com.puraguia.app.util.setupHeader
 import com.puraguia.app.util.toast
@@ -24,14 +29,14 @@ import java.util.Calendar
 import java.util.Locale
 
 /**
- * Pantalla de reserva: día, hora, método de pago y resumen.
- * Ya funciona la parte visual (selección y resumen).
- *
- * TODO(equipo reservas): al confirmar, guardar la reserva en SQLite (tabla reservas con
- * id_usuario = SessionManager(this).getUserId(), id_tour, fecha, hora, método de pago, total)
- * y mostrar la confirmación / mandar a "Historial de reservas".
+ * Pantalla de reserva: día, hora, método de pago y resumen, persistida en SQLite.
  */
 class ReservaActivity : AppCompatActivity() {
+
+    private lateinit var tourDao: TourDAO
+    private lateinit var reservaDao: ReservaDao
+    private lateinit var actividadDao: ActividadDao
+    private lateinit var session: SessionManager
 
     private lateinit var tour: Tour
     private lateinit var spinnerHora: Spinner
@@ -51,8 +56,19 @@ class ReservaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reserva)
 
-        val id = intent.getIntExtra(EXTRA_TOUR_ID, 1)
-        tour = SampleData.tourPorId(id) ?: SampleData.tours.first()
+        tourDao = TourDAO(this)
+        reservaDao = ReservaDao(this)
+        actividadDao = ActividadDao(this)
+        session = SessionManager(this)
+
+        val id = intent.getIntExtra(EXTRA_TOUR_ID, -1)
+        val encontrado = tourDao.obtenerPorId(id) ?: tourDao.obtenerTodos().firstOrNull()
+        if (encontrado == null) {
+            toast("Tour no disponible")
+            finish()
+            return
+        }
+        tour = encontrado
         setupHeader("Reservar Tour", tour.titulo)
 
         spinnerHora = findViewById(R.id.spinner_hora)
@@ -70,11 +86,45 @@ class ReservaActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.txt_resumen_guia).text = tour.guia
         findViewById<TextView>(R.id.txt_total).text = "$${tour.precio}"
 
-        btnConfirmar.setOnClickListener {
-            // TODO(equipo reservas): guardar la reserva en SQLite
-            toast("Reserva lista para guardar (lógica pendiente del equipo de reservas)")
-        }
+        btnConfirmar.setOnClickListener { confirmarReserva() }
         actualizarResumen()
+    }
+
+    private fun confirmarReserva() {
+        val dia = diaSeleccionado
+        val metodo = metodoPago
+        val posHora = spinnerHora.selectedItemPosition
+        if (dia == null || posHora <= 0 || metodo == null) {
+            toast("Completa fecha, hora y método de pago")
+            return
+        }
+        val fechaTexto = formatoDia.format(dia.time).replaceFirstChar { it.uppercase() }
+        val horaTexto = "${spinnerHora.selectedItem} ${if (btnAm.isSelected) "AM" else "PM"}"
+
+        val idReserva = reservaDao.insertar(
+            usuarioId = session.getUserId(),
+            tourId = tour.id,
+            fechaTour = fechaTexto,
+            horaTour = horaTexto,
+            metodoPago = metodo,
+            total = tour.precio
+        )
+        if (idReserva > 0L) {
+            actividadDao.registrar(
+                session.getUserId(),
+                TipoActividad.RESERVA,
+                "Reserva confirmada",
+                "${tour.titulo} · $fechaTexto ($horaTexto)"
+            )
+            AlertDialog.Builder(this)
+                .setTitle("¡Reserva Confirmada!")
+                .setMessage("Tu reserva para \"${tour.titulo}\" el $fechaTexto a las $horaTexto quedó guardada.")
+                .setPositiveButton("Aceptar") { _, _ -> finish() }
+                .setCancelable(false)
+                .show()
+        } else {
+            toast("No se pudo guardar la reserva")
+        }
     }
 
     private fun inicioDelDia(calendario: Calendar): Calendar {

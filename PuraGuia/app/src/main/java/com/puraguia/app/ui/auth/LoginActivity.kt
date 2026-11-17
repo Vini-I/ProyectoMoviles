@@ -77,6 +77,12 @@ class LoginActivity : AppCompatActivity() {
                 toast("Correo o contraseña incorrectos")
             } else {
                 session.guardarSesion(usuario)
+                com.puraguia.app.data.ActividadDao(this).registrar(
+                    usuario.id,
+                    com.puraguia.app.model.TipoActividad.SESION,
+                    "Inicio de sesión",
+                    "Desde tu dispositivo móvil"
+                )
                 toast("¡Bienvenido, ${usuario.nombre.substringBefore(' ')}!")
                 setResult(RESULT_OK)
                 finish()

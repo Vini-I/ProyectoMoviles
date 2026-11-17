@@ -2,22 +2,26 @@ package com.puraguia.app.ui.profile
 
 import android.graphics.Color
 import android.os.Bundle
+import android.view.Gravity
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.puraguia.app.R
-import com.puraguia.app.data.SampleData
+import com.puraguia.app.data.ActividadDao
+import com.puraguia.app.model.Actividad
 import com.puraguia.app.model.TipoActividad
+import com.puraguia.app.util.SessionManager
+import com.puraguia.app.util.dp
 import com.puraguia.app.util.setupHeader
 
 /**
- * Pantalla "Actividad Reciente": historial de acciones filtrable por categoría.
- *
- * TODO(equipo perfil): consultar la tabla `actividad_reciente` en SQLite por usuario.
+ * Pantalla "Actividad Reciente": historial de acciones guardado por usuario en SQLite.
  */
 class ActividadRecienteActivity : AppCompatActivity() {
 
+    private lateinit var actividadDao: ActividadDao
+    private lateinit var session: SessionManager
     private lateinit var contenedor: LinearLayout
     private lateinit var tabs: List<Pair<TextView, TipoActividad?>>
 
@@ -26,6 +30,8 @@ class ActividadRecienteActivity : AppCompatActivity() {
         setContentView(R.layout.activity_actividad_reciente)
         setupHeader("Actividad Reciente", "Últimas acciones en tu cuenta")
 
+        actividadDao = ActividadDao(this)
+        session = SessionManager(this)
         contenedor = findViewById(R.id.container_actividades)
         tabs = listOf(
             findViewById<TextView>(R.id.tab_todo) to null,
@@ -42,16 +48,24 @@ class ActividadRecienteActivity : AppCompatActivity() {
 
     private fun seleccionarTab(tabActivo: TextView, filtro: TipoActividad?) {
         tabs.forEach { (tab, _) -> tab.isSelected = (tab == tabActivo) }
-        val lista = if (filtro == null) {
-            SampleData.actividades
-        } else {
-            SampleData.actividades.filter { it.tipo == filtro }
-        }
+        val lista = actividadDao.obtenerPorUsuario(session.getUserId(), filtro)
         mostrarActividades(lista)
     }
 
-    private fun mostrarActividades(actividades: List<com.puraguia.app.model.Actividad>) {
+    private fun mostrarActividades(actividades: List<Actividad>) {
         contenedor.removeAllViews()
+        if (actividades.isEmpty()) {
+            val vacio = TextView(this).apply {
+                text = "Aún no hay actividad registrada en esta categoría."
+                gravity = Gravity.CENTER
+                textSize = 14f
+                setTextColor(Color.parseColor("#6B7280"))
+                setPadding(dp(16), dp(32), dp(16), dp(16))
+            }
+            contenedor.addView(vacio)
+            return
+        }
+
         actividades.forEach { actividad ->
             val vista = layoutInflater.inflate(R.layout.item_actividad, contenedor, false)
             val img = vista.findViewById<ImageView>(R.id.img_icono)

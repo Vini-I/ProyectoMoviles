@@ -117,6 +117,14 @@ class RegisterTouristActivity : AppCompatActivity() {
                 return
             }
             session.guardarSesion(nuevo.copy(id = id, email = email.lowercase()))
+            com.puraguia.app.data.ActividadDao(this).registrar(
+                id,
+                com.puraguia.app.model.TipoActividad.SESION,
+                "Cuenta de turista creada",
+                "Registro en Pura Guía"
+            )
+            com.puraguia.app.data.MensajeriaDao(this)
+                .crearMensajeBienvenidaSiNuevo(id, esGuia = false)
             toast("¡Cuenta creada! Bienvenido a Pura Guía")
             setResult(RESULT_OK)
             finish()
