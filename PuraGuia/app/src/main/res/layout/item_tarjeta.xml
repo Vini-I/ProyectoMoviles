@@ -85,11 +85,20 @@
             </LinearLayout>
 
             <ImageButton
+                android:id="@+id/btn_editar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Editar método de pago"
+                android:src="@drawable/ic_edit"
+                app:tint="@color/pg_blue" />
+
+            <ImageButton
                 android:id="@+id/btn_eliminar"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Eliminar tarjeta"
+                android:contentDescription="Eliminar método de pago"
                 android:src="@drawable/ic_delete"
                 app:tint="@color/pg_text_hint" />
         </LinearLayout>

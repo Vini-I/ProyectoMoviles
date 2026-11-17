@@ -66,8 +66,18 @@ data class Tarjeta(
     val marca: String,
     val ultimos4: String,
     val vence: String,
-    val predeterminada: Boolean
-)
+    val predeterminada: Boolean,
+    val tipo: String = TIPO_TARJETA,
+    val telefono: String = "",
+    val titular: String = ""
+) {
+    val esSinpe: Boolean get() = tipo == TIPO_SINPE
+
+    companion object {
+        const val TIPO_TARJETA = "TARJETA"
+        const val TIPO_SINPE = "SINPE"
+    }
+}
 
 enum class TipoActividad { RESERVA, FAVORITO, RESENA, BUSQUEDA, PAGO, SESION }
 

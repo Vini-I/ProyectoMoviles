@@ -46,6 +46,49 @@ class DatabaseHelper private constructor(context: Context) :
             db.execSQL(CREATE_ACTIVIDAD_RECIENTE)
             sembrarDatosIniciales(db)
         }
+        if (oldVersion < 4) {
+            migrarTablaMetodosPagoV4(db)
+            sembrarSinpeDemoSiVacio(db)
+        }
+    }
+
+    private fun migrarTablaMetodosPagoV4(db: SQLiteDatabase) {
+        val columnasExistentes = mutableSetOf<String>()
+        db.rawQuery("PRAGMA table_info($TABLA_METODOS_PAGO)", null).use { cursor ->
+            val idx = cursor.getColumnIndex("name")
+            while (cursor.moveToNext()) {
+                if (idx >= 0) columnasExistentes.add(cursor.getString(idx).lowercase())
+            }
+        }
+        val nuevasColumnas = listOf(
+            COL_MP_TIPO to "TEXT NOT NULL DEFAULT 'TARJETA'",
+            COL_MP_TELEFONO to "TEXT NOT NULL DEFAULT ''",
+            COL_MP_TITULAR to "TEXT NOT NULL DEFAULT ''"
+        )
+        nuevasColumnas.forEach { (col, def) ->
+            if (!columnasExistentes.contains(col)) {
+                db.execSQL("ALTER TABLE $TABLA_METODOS_PAGO ADD COLUMN $col $def")
+            }
+        }
+    }
+
+    private fun sembrarSinpeDemoSiVacio(db: SQLiteDatabase) {
+        val idDemo = db.query(
+            TABLA_USUARIOS,
+            arrayOf(COL_ID),
+            "$COL_EMAIL = ?",
+            arrayOf("demo@puraguia.cr"),
+            null, null, null
+        ).use { c -> if (c.moveToFirst()) c.getLong(0) else -1L }
+        if (idDemo <= 0L) return
+
+        val yaTieneSinpe = db.rawQuery(
+            "SELECT COUNT(*) FROM $TABLA_METODOS_PAGO WHERE $COL_MP_USUARIO_ID = ? AND $COL_MP_TIPO = 'SINPE'",
+            arrayOf(idDemo.toString())
+        ).use { c -> c.moveToFirst() && c.getInt(0) > 0 }
+        if (!yaTieneSinpe) {
+            insertarSinpeSeed(db, idDemo, "8888-9999", "Sofía Vargas", false)
+        }
     }
 
     private fun migrarTablaToursV3(db: SQLiteDatabase) {
@@ -265,6 +308,7 @@ class DatabaseHelper private constructor(context: Context) :
 
             insertarTarjetaSeed(db, idTuristaDemo, "VISA", "4242", "12/27", true)
             insertarTarjetaSeed(db, idTuristaDemo, "MC", "8888", "08/28", false)
+            insertarSinpeSeed(db, idTuristaDemo, "8888-9999", "Sofía Vargas", false)
 
             insertarActividadSeed(db, idTuristaDemo, "RESERVA", "Reserva confirmada", "Canopy Tour Monteverde", "16 Nov 2026, 2:30 PM", ahora - 86_400_000L)
             insertarActividadSeed(db, idTuristaDemo, "FAVORITO", "Tour agregado a favoritos", "Tour Volcán Arenal", "15 Nov 2026, 5:15 PM", ahora - 86_400_000L * 2)
@@ -417,6 +461,26 @@ class DatabaseHelper private constructor(context: Context) :
             put(COL_MP_ULTIMOS4, ultimos4)
             put(COL_MP_VENCE, vence)
             put(COL_MP_PREDETERMINADA, if (pred) 1 else 0)
+            put(COL_MP_TIPO, "TARJETA")
+            put(COL_MP_TELEFONO, "")
+            put(COL_MP_TITULAR, "")
+        }
+        db.insert(TABLA_METODOS_PAGO, null, cv)
+    }
+
+    private fun insertarSinpeSeed(
+        db: SQLiteDatabase, usuarioId: Long, telefono: String, titular: String, pred: Boolean
+    ) {
+        val digitos = telefono.filter { it.isDigit() }
+        val cv = ContentValues().apply {
+            put(COL_MP_USUARIO_ID, usuarioId)
+            put(COL_MP_MARCA, "SINPE")
+            put(COL_MP_ULTIMOS4, digitos.takeLast(4))
+            put(COL_MP_VENCE, "")
+            put(COL_MP_PREDETERMINADA, if (pred) 1 else 0)
+            put(COL_MP_TIPO, "SINPE")
+            put(COL_MP_TELEFONO, telefono)
+            put(COL_MP_TITULAR, titular)
         }
         db.insert(TABLA_METODOS_PAGO, null, cv)
     }
@@ -473,7 +537,7 @@ class DatabaseHelper private constructor(context: Context) :
 
     companion object {
         const val DB_NAME = "pura_guia.db"
-        const val DB_VERSION = 3
+        const val DB_VERSION = 4
 
         // ---------- Tabla: usuarios ----------
         const val TABLA_USUARIOS = "usuarios"
@@ -570,6 +634,9 @@ class DatabaseHelper private constructor(context: Context) :
         const val COL_MP_ULTIMOS4 = "ultimos4"
         const val COL_MP_VENCE = "vence"
         const val COL_MP_PREDETERMINADA = "predeterminada"
+        const val COL_MP_TIPO = "tipo"
+        const val COL_MP_TELEFONO = "telefono"
+        const val COL_MP_TITULAR = "titular"
 
         // ---------- Tabla: actividad_reciente ----------
         const val TABLA_ACTIVIDAD_RECIENTE = "actividad_reciente"
@@ -696,6 +763,9 @@ class DatabaseHelper private constructor(context: Context) :
                 "$COL_MP_ULTIMOS4 TEXT NOT NULL, " +
                 "$COL_MP_VENCE TEXT NOT NULL, " +
                 "$COL_MP_PREDETERMINADA INTEGER NOT NULL DEFAULT 0, " +
+                "$COL_MP_TIPO TEXT NOT NULL DEFAULT 'TARJETA', " +
+                "$COL_MP_TELEFONO TEXT NOT NULL DEFAULT '', " +
+                "$COL_MP_TITULAR TEXT NOT NULL DEFAULT '', " +
                 "FOREIGN KEY ($COL_MP_USUARIO_ID) REFERENCES $TABLA_USUARIOS($COL_ID) ON DELETE CASCADE" +
                 ")"
 

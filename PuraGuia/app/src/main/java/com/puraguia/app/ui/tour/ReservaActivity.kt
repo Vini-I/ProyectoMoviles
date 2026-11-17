@@ -3,10 +3,13 @@ package com.puraguia.app.ui.tour
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Gravity
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.GridLayout
 import android.widget.Spinner
 import android.widget.TextView
@@ -15,10 +18,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.puraguia.app.R
 import com.puraguia.app.data.ActividadDao
+import com.puraguia.app.data.MetodoPagoDao
 import com.puraguia.app.data.ReservaDao
 import com.puraguia.app.data.TourDAO
+import com.puraguia.app.data.UsuarioDao
+import com.puraguia.app.model.Tarjeta
 import com.puraguia.app.model.TipoActividad
 import com.puraguia.app.model.Tour
+import com.puraguia.app.ui.profile.MetodosPagoActivity
 import com.puraguia.app.util.ChipGrid
 import com.puraguia.app.util.SessionManager
 import com.puraguia.app.util.dp
@@ -36,6 +43,8 @@ class ReservaActivity : AppCompatActivity() {
     private lateinit var tourDao: TourDAO
     private lateinit var reservaDao: ReservaDao
     private lateinit var actividadDao: ActividadDao
+    private lateinit var metodoPagoDao: MetodoPagoDao
+    private lateinit var usuarioDao: UsuarioDao
     private lateinit var session: SessionManager
 
     private lateinit var tour: Tour
@@ -45,10 +54,15 @@ class ReservaActivity : AppCompatActivity() {
     private lateinit var btnConfirmar: View
     private lateinit var txtResumenDia: TextView
     private lateinit var txtResumenHora: TextView
+    private lateinit var layoutDetalleSinpe: View
+    private lateinit var txtSinpeDestino: TextView
+    private lateinit var txtSinpeOrigen: TextView
+    private lateinit var editSinpeComprobante: EditText
 
     private val celdasDias = mutableListOf<TextView>()
     private var diaSeleccionado: Calendar? = null
     private var metodoPago: String? = null
+    private var sinpeConfigurado: Tarjeta? = null
 
     private val formatoDia = SimpleDateFormat("EEEE d 'de' MMMM", Locale("es", "CR"))
 
@@ -59,6 +73,8 @@ class ReservaActivity : AppCompatActivity() {
         tourDao = TourDAO(this)
         reservaDao = ReservaDao(this)
         actividadDao = ActividadDao(this)
+        metodoPagoDao = MetodoPagoDao(this)
+        usuarioDao = UsuarioDao(this)
         session = SessionManager(this)
 
         val id = intent.getIntExtra(EXTRA_TOUR_ID, -1)
@@ -77,10 +93,26 @@ class ReservaActivity : AppCompatActivity() {
         btnConfirmar = findViewById(R.id.btn_confirmar_reserva)
         txtResumenDia = findViewById(R.id.txt_resumen_dia)
         txtResumenHora = findViewById(R.id.txt_resumen_hora)
+        layoutDetalleSinpe = findViewById(R.id.layout_detalle_sinpe)
+        txtSinpeDestino = findViewById(R.id.txt_sinpe_destino)
+        txtSinpeOrigen = findViewById(R.id.txt_sinpe_origen)
+        editSinpeComprobante = findViewById(R.id.edit_sinpe_comprobante)
+
+        findViewById<View>(R.id.btn_configurar_sinpe_reserva).setOnClickListener {
+            startActivity(Intent(this, MetodosPagoActivity::class.java))
+        }
+        editSinpeComprobante.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                actualizarResumen()
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
 
         construirDias()
         configurarHora()
         configurarPago()
+        cargarDatosSinpe()
 
         findViewById<TextView>(R.id.txt_resumen_duracion).text = tour.duracion.substringBefore(" (")
         findViewById<TextView>(R.id.txt_resumen_guia).text = tour.guia
@@ -88,6 +120,30 @@ class ReservaActivity : AppCompatActivity() {
 
         btnConfirmar.setOnClickListener { confirmarReserva() }
         actualizarResumen()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (::metodoPagoDao.isInitialized) {
+            cargarDatosSinpe()
+            actualizarResumen()
+        }
+    }
+
+    private fun cargarDatosSinpe() {
+        sinpeConfigurado = metodoPagoDao.obtenerSinpePorUsuario(session.getUserId()).firstOrNull()
+        val guia = if (tour.guiaId > 0L) usuarioDao.obtenerPorId(tour.guiaId) else usuarioDao.obtenerPorNombre(tour.guia)
+        val telefonoGuia = guia?.telefono?.takeIf { it.isNotBlank() }?.let {
+            MetodoPagoDao.formatearTelefonoSinpe(it)
+        } ?: "8888-0000"
+        txtSinpeDestino.text = "Transferir $${tour.precio} por SINPE Móvil al $telefonoGuia (${tour.guia})"
+
+        val cuentaUsuario = sinpeConfigurado
+        txtSinpeOrigen.text = if (cuentaUsuario != null) {
+            "Tu número SINPE configurado: ${cuentaUsuario.telefono} (${cuentaUsuario.titular})"
+        } else {
+            "No tienes un SINPE Móvil configurado. Toca \"Configurar\" para agregar tu número."
+        }
     }
 
     private fun confirmarReserva() {
@@ -98,6 +154,24 @@ class ReservaActivity : AppCompatActivity() {
             toast("Completa fecha, hora y método de pago")
             return
         }
+
+        val esSinpe = metodo.equals("Sinpe", ignoreCase = true)
+        var metodoPersistido = metodo
+        if (esSinpe) {
+            if (sinpeConfigurado == null) {
+                toast("Configura primero tu número SINPE Móvil")
+                startActivity(Intent(this, MetodosPagoActivity::class.java))
+                return
+            }
+            val comprobante = editSinpeComprobante.text.toString().trim()
+            if (comprobante.length < 4) {
+                editSinpeComprobante.error = "Ingresa al menos 4 dígitos del comprobante"
+                editSinpeComprobante.requestFocus()
+                return
+            }
+            metodoPersistido = "SINPE Móvil (${sinpeConfigurado!!.telefono} · Ref. $comprobante)"
+        }
+
         val fechaTexto = formatoDia.format(dia.time).replaceFirstChar { it.uppercase() }
         val horaTexto = "${spinnerHora.selectedItem} ${if (btnAm.isSelected) "AM" else "PM"}"
 
@@ -106,7 +180,7 @@ class ReservaActivity : AppCompatActivity() {
             tourId = tour.id,
             fechaTour = fechaTexto,
             horaTour = horaTexto,
-            metodoPago = metodo,
+            metodoPago = metodoPersistido,
             total = tour.precio
         )
         if (idReserva > 0L) {
@@ -118,7 +192,7 @@ class ReservaActivity : AppCompatActivity() {
             )
             AlertDialog.Builder(this)
                 .setTitle("¡Reserva Confirmada!")
-                .setMessage("Tu reserva para \"${tour.titulo}\" el $fechaTexto a las $horaTexto quedó guardada.")
+                .setMessage("Tu reserva para \"${tour.titulo}\" el $fechaTexto a las $horaTexto quedó guardada con $metodoPersistido.")
                 .setPositiveButton("Aceptar") { _, _ -> finish() }
                 .setCancelable(false)
                 .show()
@@ -219,9 +293,11 @@ class ReservaActivity : AppCompatActivity() {
             seleccionMultiple = false,
             columnas = 2,
             alturaDp = 92,
-            iconos = listOf(R.drawable.ic_credit_card, R.drawable.ic_credit_card, R.drawable.ic_wallet),
+            iconos = listOf(R.drawable.ic_phone, R.drawable.ic_credit_card, R.drawable.ic_wallet),
             alCambiar = { elegidos ->
                 metodoPago = elegidos.firstOrNull()
+                layoutDetalleSinpe.visibility =
+                    if (metodoPago.equals("Sinpe", ignoreCase = true)) View.VISIBLE else View.GONE
                 actualizarResumen()
             }
         )
@@ -242,7 +318,9 @@ class ReservaActivity : AppCompatActivity() {
             "No seleccionada"
         }
 
-        val completo = dia != null && posicionHora > 0 && metodoPago != null
+        val sinpeValido = !metodoPago.equals("Sinpe", ignoreCase = true) ||
+            (sinpeConfigurado != null && editSinpeComprobante.text.toString().trim().length >= 4)
+        val completo = dia != null && posicionHora > 0 && metodoPago != null && sinpeValido
         btnConfirmar.isEnabled = completo
         btnConfirmar.alpha = if (completo) 1f else 0.5f
     }

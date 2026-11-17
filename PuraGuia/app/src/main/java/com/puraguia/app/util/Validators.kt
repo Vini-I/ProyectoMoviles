@@ -17,6 +17,12 @@ object Validators {
         return digitos in 8..15 && soloCaracteresValidos
     }
 
+    /** Número SINPE Móvil de Costa Rica: exactamente 8 dígitos (se permiten espacios y guiones). */
+    fun esSinpeValido(telefono: String): Boolean {
+        val limpio = telefono.trim()
+        return limpio.all { it.isDigit() || it == ' ' || it == '-' } && limpio.count { it.isDigit() } == 8
+    }
+
     fun esNombreValido(nombre: String): Boolean = nombre.trim().length >= 3
 
     fun esPasswordValida(password: String): Boolean =

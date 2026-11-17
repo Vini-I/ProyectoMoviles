@@ -102,8 +102,9 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 val fila = layoutInflater.inflate(R.layout.item_historial, contenedor, false)
                 fila.findViewById<TextView>(R.id.txt_titulo).text = reserva.tour
                 fila.findViewById<TextView>(R.id.txt_estado).text = reserva.estado
+                val fechaBase = if (reserva.hora.isNotBlank()) "${reserva.fecha} · ${reserva.hora}" else reserva.fecha
                 fila.findViewById<TextView>(R.id.txt_fecha).text =
-                    if (reserva.hora.isNotBlank()) "${reserva.fecha} · ${reserva.hora}" else reserva.fecha
+                    if (reserva.metodoPago.isNotBlank()) "$fechaBase\n${reserva.metodoPago}" else fechaBase
                 fila.findViewById<TextView>(R.id.txt_total).text = "$${reserva.total}"
                 fila.setOnClickListener {
                     startActivity(TourDetailActivity.createIntent(requireContext(), reserva.tourId))

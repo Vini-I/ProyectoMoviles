@@ -98,6 +98,79 @@
                 android:layout_marginTop="4dp" />
 
             <LinearLayout
+                android:id="@+id/layout_detalle_sinpe"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_info_card"
+                android:orientation="vertical"
+                android:padding="14dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:contentDescription="SINPE Móvil"
+                        android:src="@drawable/ic_phone"
+                        app:tint="@color/pg_teal" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Pago con SINPE Móvil"
+                        android:textColor="@color/pg_teal_dark"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/btn_configurar_sinpe_reserva"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="4dp"
+                        android:text="Configurar"
+                        android:textColor="@color/pg_blue"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/txt_sinpe_destino"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/pg_text"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/txt_sinpe_origen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/pg_text_muted"
+                    android:textSize="13sp" />
+
+                <EditText
+                    android:id="@+id/edit_sinpe_comprobante"
+                    style="@style/PG.Input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:hint="N.º de comprobante SINPE (ej. 123456)"
+                    android:inputType="number"
+                    android:maxLength="12"
+                    android:maxLines="1" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
