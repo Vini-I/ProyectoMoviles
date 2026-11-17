@@ -385,9 +385,68 @@
                             android:src="@drawable/ic_chevron_right"
                             app:tint="@color/pg_text_hint" />
                     </LinearLayout>
+
+            <!-- Separador -->
+                    <View
+                        android:id="@+id/divider_agregar_tour"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@drawable/bg_divider"
+                        android:visibility="gone" />
+
+            <!-- Agregar Tour -->
+                    <LinearLayout
+                        android:id="@+id/row_agregar_tour"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_icon_square"
+                    android:contentDescription="Agregar Tour"
+                    android:padding="12dp"
+                    android:src="@android:drawable/ic_input_add"
+                    app:tint="@color/pg_teal" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Agregar Tour"
+                        android:textAppearance="@style/PG.CardTitle" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Publicar un nuevo tour"
+                        android:textColor="@color/pg_text_muted"
+                        android:textSize="13sp" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="Abrir"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="@color/pg_text_hint" />
+            </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
             <!-- Historial de reservas -->
             <com.google.android.material.card.MaterialCardView
                 style="@style/PG.Card"
@@ -417,6 +476,10 @@
                         android:orientation="vertical" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+
+
+
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_cerrar_sesion"
