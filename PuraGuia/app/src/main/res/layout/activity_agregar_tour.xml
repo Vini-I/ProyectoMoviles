@@ -28,6 +28,7 @@
 
         <!-- TÍTULO -->
         <TextView
+            android:id="@+id/txt_titulo_formulario"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Agregar Tour"
@@ -38,6 +39,7 @@
 
         <!-- DESCRIPCIÓN -->
         <TextView
+            android:id="@+id/txt_subtitulo_formulario"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Completa la información para publicar un nuevo tour."

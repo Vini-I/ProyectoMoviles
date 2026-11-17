@@ -1,6 +1,7 @@
 package com.puraguia.app.ui.common
 
 import android.graphics.Paint
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,9 +9,22 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.puraguia.app.R
 import com.puraguia.app.model.Tour
+import java.io.File
 
 /** Crea las tarjetas de tour que se reutilizan en Inicio, Buscar, Favoritos y el perfil del guía. */
 object TourCardFactory {
+
+    fun cargarImagen(img: ImageView, tour: Tour) {
+        val ruta = tour.imagenPath
+        if (!ruta.isNullOrBlank()) {
+            val archivo = File(ruta)
+            if (archivo.exists()) {
+                img.setImageURI(Uri.fromFile(archivo))
+                return
+            }
+        }
+        img.setImageResource(tour.imagen)
+    }
 
     /** Tarjeta grande (carruseles de la pantalla de inicio). */
     fun crearTarjeta(
@@ -20,7 +34,7 @@ object TourCardFactory {
         alTocar: (Tour) -> Unit
     ): View {
         val vista = inflater.inflate(R.layout.item_tour_card, padre, false)
-        vista.findViewById<ImageView>(R.id.img_tour).setImageResource(tour.imagen)
+        cargarImagen(vista.findViewById(R.id.img_tour), tour)
         vista.findViewById<TextView>(R.id.txt_rating).text = tour.rating.toString()
         vista.findViewById<TextView>(R.id.txt_titulo).text = tour.titulo
         vista.findViewById<TextView>(R.id.txt_lugar).text = tour.lugar
@@ -47,7 +61,7 @@ object TourCardFactory {
         alTocar: (Tour) -> Unit
     ): View {
         val vista = inflater.inflate(R.layout.item_tour_row, padre, false)
-        vista.findViewById<ImageView>(R.id.img_tour).setImageResource(tour.imagen)
+        cargarImagen(vista.findViewById(R.id.img_tour), tour)
         vista.findViewById<TextView>(R.id.txt_rating).text = tour.rating.toString()
         vista.findViewById<TextView>(R.id.txt_titulo).text = tour.titulo
         vista.findViewById<TextView>(R.id.txt_lugar).text = tour.lugar

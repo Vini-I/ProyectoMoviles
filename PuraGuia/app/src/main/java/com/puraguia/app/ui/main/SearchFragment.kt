@@ -2,15 +2,20 @@ package com.puraguia.app.ui.main
 
 import android.graphics.Paint
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.AdapterView
 import android.widget.EditText
 import android.widget.GridLayout
 import android.widget.LinearLayout
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.puraguia.app.R
-import com.puraguia.app.data.SampleData
+import com.puraguia.app.data.TourDAO
 import com.puraguia.app.model.Tour
 import com.puraguia.app.ui.common.TourCardFactory
 import com.puraguia.app.ui.tour.TourDetailActivity
@@ -18,44 +23,49 @@ import com.puraguia.app.util.ChipGrid
 import com.puraguia.app.util.dp
 
 /**
- * Pestaña "Buscar": cuadro de búsqueda, provincia, categorías, duración y resultados.
- *
- * TODO(equipo búsqueda): aquí falta la LÓGICA de filtrado. Los controles ya existen:
- *  - edit_buscar (texto), spinner_provincia, chipsCategorias, chipsDuracion, spinner_orden
- *  - mostrarResultados(lista) pinta los resultados y actualiza el contador.
- *  Solo hay que consultar SQLite con los filtros elegidos y llamar a mostrarResultados().
+ * Pestaña "Buscar": consulta tours directamente en SQLite con búsqueda por texto,
+ * provincia, categorías, duración y ordenamiento.
  */
 class SearchFragment : Fragment(R.layout.fragment_search) {
 
+    private lateinit var tourDao: TourDAO
     private lateinit var chipsCategorias: ChipGrid
     private lateinit var chipsDuracion: ChipGrid
     private lateinit var editBuscar: EditText
+    private lateinit var spinnerProvincia: Spinner
+    private lateinit var spinnerOrden: Spinner
     private lateinit var layoutFiltrosActivos: View
     private lateinit var containerFiltrosActivos: LinearLayout
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        tourDao = TourDAO(requireContext())
         editBuscar = view.findViewById(R.id.edit_buscar)
+        spinnerProvincia = view.findViewById(R.id.spinner_provincia)
+        spinnerOrden = view.findViewById(R.id.spinner_orden)
         layoutFiltrosActivos = view.findViewById(R.id.layout_filtros_activos)
         containerFiltrosActivos = view.findViewById(R.id.container_filtros_activos)
 
         val btnLimpiar = view.findViewById<TextView>(R.id.btn_limpiar_filtros)
         btnLimpiar.paintFlags = btnLimpiar.paintFlags or Paint.UNDERLINE_TEXT_FLAG
         btnLimpiar.setOnClickListener {
+            editBuscar.text.clear()
+            spinnerProvincia.setSelection(0)
+            spinnerOrden.setSelection(0)
             chipsCategorias.limpiar()
             chipsDuracion.limpiar()
-            actualizarFiltrosActivos()
+            aplicarFiltros()
         }
 
         chipsCategorias = ChipGrid(
             requireContext(),
             view.findViewById<GridLayout>(R.id.grid_categorias),
-            listOf("Cerca", "Avistamiento", "Familiar", "Aventura"),
+            listOf("Aventura", "Naturaleza", "Avistamiento", "Familiar", "Cultura", "Playa"),
             seleccionMultiple = true,
             columnas = 2,
             alturaDp = 46,
-            alCambiar = { actualizarFiltrosActivos() }
+            alCambiar = { aplicarFiltros() }
         )
         chipsDuracion = ChipGrid(
             requireContext(),
@@ -64,12 +74,55 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             seleccionMultiple = false,
             columnas = 3,
             alturaDp = 46,
-            alCambiar = { actualizarFiltrosActivos() }
+            alCambiar = { aplicarFiltros() }
         )
 
+        editBuscar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                aplicarFiltros()
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        editBuscar.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                aplicarFiltros()
+                true
+            } else {
+                false
+            }
+        }
+
+        view.findViewById<View>(R.id.btn_buscar).setOnClickListener { aplicarFiltros() }
+
+        val listenerSpinner = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, v: View?, position: Int, id: Long) {
+                aplicarFiltros()
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+        spinnerProvincia.onItemSelectedListener = listenerSpinner
+        spinnerOrden.onItemSelectedListener = listenerSpinner
+    }
+
+    override fun onResume() {
+        super.onResume()
+        aplicarFiltros()
+    }
+
+    private fun aplicarFiltros() {
+        if (!isAdded) return
         actualizarFiltrosActivos()
-        // Por ahora se muestran todos los tours de ejemplo
-        mostrarResultados(SampleData.tours)
+        val provincia = spinnerProvincia.selectedItem?.toString()
+        val resultados = tourDao.buscar(
+            query = editBuscar.text.toString(),
+            provincia = provincia,
+            categorias = chipsCategorias.seleccionados,
+            duracionFiltro = chipsDuracion.seleccionados.firstOrNull(),
+            orden = spinnerOrden.selectedItemPosition
+        )
+        mostrarResultados(resultados)
     }
 
     private fun actualizarFiltrosActivos() {
@@ -100,7 +153,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             pill.setOnClickListener {
                 chipsCategorias.deseleccionar(texto)
                 chipsDuracion.deseleccionar(texto)
-                actualizarFiltrosActivos()
+                aplicarFiltros()
             }
             containerFiltrosActivos.addView(pill, params)
         }
@@ -108,7 +161,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private fun mostrarResultados(tours: List<Tour>) {
         val vista = view ?: return
-        vista.findViewById<TextView>(R.id.txt_resultados).text = "${tours.size} resultados"
+        vista.findViewById<TextView>(R.id.txt_resultados).text =
+            if (tours.size == 1) "1 resultado" else "${tours.size} resultados"
         val contenedor = vista.findViewById<LinearLayout>(R.id.container_resultados)
         contenedor.removeAllViews()
         tours.forEach { tour ->
