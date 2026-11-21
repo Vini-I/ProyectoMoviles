@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Carpeta en caché para fotografías temporales de la cámara -->
+    <cache-path
+        name="camara_temporal"
+        path="." />
+    <!-- Carpeta interna persistente usada por FileUtils -->
+    <files-path
+        name="imagenes_internas"
+        path="." />
+</paths>

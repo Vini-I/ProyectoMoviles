@@ -3,6 +3,7 @@ package com.puraguia.app.util
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
+import androidx.core.content.FileProvider
 import java.io.File
 
 object FileUtils {
@@ -31,6 +32,29 @@ object FileUtils {
 
     /** Nombre legible de un archivo guardado con copiarAInterno (sin el prefijo de fecha). */
     fun nombreLegible(ruta: String): String = File(ruta).name.substringAfter('_')
+
+    /**
+     * Crea un archivo temporal en cacheDir para recibir capturas de la cámara
+     * sin persistencia obligatoria en base de datos.
+     */
+    fun crearArchivoTemporal(
+        context: Context,
+        carpeta: String = "camara",
+        prefijo: String = "tour_",
+        extension: String = ".jpg"
+    ): File {
+        val directorio = File(context.cacheDir, carpeta)
+        if (!directorio.exists()) directorio.mkdirs()
+        return File.createTempFile(prefijo, extension, directorio)
+    }
+
+    /**
+     * Devuelve una content:// URI segura mediante el FileProvider configurado en el Manifest.
+     */
+    fun obtenerUriFileProvider(context: Context, archivo: File): Uri {
+        val authority = "${context.packageName}.fileprovider"
+        return FileProvider.getUriForFile(context, authority, archivo)
+    }
 
     private fun obtenerNombre(context: Context, uri: Uri): String? {
         return try {
