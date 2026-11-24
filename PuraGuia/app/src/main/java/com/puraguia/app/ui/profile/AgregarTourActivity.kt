@@ -35,9 +35,12 @@ class AgregarTourActivity : AppCompatActivity() {
     private lateinit var editCuidados: EditText
     private lateinit var spinnerCategoria: Spinner
     private lateinit var imgTour: ImageView
+    private lateinit var txtEstadoFoto: TextView
 
     private var tourIdEditar: Int = -1
     private var imagenPath: String? = null
+    private var cameraImageFile: File? = null
+    private var cameraImageUri: Uri? = null
 
     private val categorias = listOf(
         "Aventura",
@@ -68,11 +71,51 @@ class AgregarTourActivity : AppCompatActivity() {
                 if (ruta != null) {
                     imagenPath = ruta
                     imgTour.setImageURI(Uri.fromFile(File(ruta)))
+                    txtEstadoFoto.text = ESTADO_TOMADA
                 } else {
+                    txtEstadoFoto.text = ESTADO_ERROR
                     toast("No se pudo guardar la imagen seleccionada")
                 }
             }
         }
+
+    private val takePictureLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+        if (success && cameraImageFile != null && cameraImageFile!!.exists() && cameraImageFile!!.length() > 0) {
+            val ruta = FileUtils.copiarAInterno(this, Uri.fromFile(cameraImageFile), "tours")
+            if (ruta != null) {
+                imagenPath = ruta
+                imgTour.setImageURI(Uri.fromFile(File(ruta)))
+                txtEstadoFoto.text = ESTADO_TOMADA
+            } else {
+                txtEstadoFoto.text = ESTADO_ERROR
+                toast("No se pudo procesar la foto tomada")
+            }
+        } else {
+            txtEstadoFoto.text = ESTADO_ERROR
+            toast("No se pudo tomar la foto")
+        }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+        if (isGranted) {
+            lanzarCamara()
+        } else {
+            txtEstadoFoto.text = ESTADO_ERROR
+            toast("Permiso de cámara denegado")
+        }
+    }
+
+    private fun lanzarCamara() {
+        try {
+            cameraImageFile = FileUtils.crearArchivoTemporal(this, "camara", "tour_", ".jpg")
+            cameraImageUri = FileUtils.obtenerUriFileProvider(this, cameraImageFile!!)
+            takePictureLauncher.launch(cameraImageUri!!)
+        } catch (e: Exception) {
+            Log.e("AgregarTourActivity", "Error al crear archivo temporal para cámara", e)
+            txtEstadoFoto.text = ESTADO_ERROR
+            toast("Error al iniciar la cámara")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,9 +141,19 @@ class AgregarTourActivity : AppCompatActivity() {
         editCuidados = findViewById(R.id.et_tour_cuidados)
         spinnerCategoria = findViewById(R.id.sp_tour_categoria)
         imgTour = findViewById(R.id.img_tour)
+        txtEstadoFoto = findViewById(R.id.txt_estado_foto)
+        txtEstadoFoto.text = ESTADO_PENDIENTE
 
         findViewById<Button>(R.id.btn_imagen).setOnClickListener {
             seleccionarImagen.launch("image/*")
+        }
+
+        findViewById<Button>(R.id.btn_tomar_foto).setOnClickListener {
+            if (com.puraguia.app.util.CameraHelper.tienePermisoCamara(this)) {
+                lanzarCamara()
+            } else {
+                requestPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+            }
         }
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categorias)
@@ -140,8 +193,10 @@ class AgregarTourActivity : AppCompatActivity() {
 
         if (!imagenPath.isNullOrBlank() && File(imagenPath!!).exists()) {
             imgTour.setImageURI(Uri.fromFile(File(imagenPath!!)))
+            txtEstadoFoto.text = ESTADO_TOMADA
         } else {
             imgTour.setImageResource(tour.imagen)
+            txtEstadoFoto.text = ESTADO_PENDIENTE
         }
 
         val idxCat = categorias.indexOfFirst { it.equals(tour.categoria, ignoreCase = true) }
@@ -241,6 +296,9 @@ class AgregarTourActivity : AppCompatActivity() {
 
     companion object {
         private const val EXTRA_TOUR_ID = "tour_id"
+        private const val ESTADO_PENDIENTE = "Pendiente"
+        private const val ESTADO_TOMADA = "Tomada"
+        private const val ESTADO_ERROR = "Error"
 
         fun createEditIntent(context: Context, tourId: Int): Intent =
             Intent(context, AgregarTourActivity::class.java).putExtra(EXTRA_TOUR_ID, tourId)
