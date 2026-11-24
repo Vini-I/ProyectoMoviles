@@ -1,226 +1,321 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:background="@android:color/white">
+    android:background="@color/pg_bg"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <include layout="@layout/include_header" />
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
-
-        <!-- ENCABEZADO -->
-        <TextView
-            android:id="@+id/btn_volver_tour"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:gravity="center_vertical"
-            android:paddingEnd="16dp"
-            android:text="← Volver"
-            android:textSize="16sp"
-            android:textColor="@color/pg_teal"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackground" />
-
-        <!-- TÍTULO -->
-        <TextView
-            android:id="@+id/txt_titulo_formulario"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Agregar Tour"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="8dp" />
-
-        <!-- DESCRIPCIÓN -->
-        <TextView
-            android:id="@+id/txt_subtitulo_formulario"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Completa la información para publicar un nuevo tour."
-            android:textSize="14sp"
-            android:layout_marginBottom="20dp" />
-
-        <!-- NOMBRE DEL TOUR -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Nombre del Tour"
-            android:textStyle="bold"
-            android:labelFor="@id/et_tour_titulo" />
-
-        <EditText
-            android:id="@+id/et_tour_titulo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="48dp"
-            android:hint="Nombre del tour"
-            android:inputType="textCapSentences"
-            android:singleLine="true"
-            android:layout_marginBottom="16dp" />
-
-        <!-- LUGAR -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Lugar"
-            android:textStyle="bold"
-            android:labelFor="@id/et_tour_lugar" />
-
-        <EditText
-            android:id="@+id/et_tour_lugar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="48dp"
-            android:hint="Ubicación del tour"
-            android:inputType="textCapWords"
-            android:singleLine="true"
-            android:layout_marginBottom="16dp" />
-
-        <!-- PRECIO -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Precio"
-            android:textStyle="bold"
-            android:labelFor="@id/et_tour_precio" />
-
-        <EditText
-            android:id="@+id/et_tour_precio"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="48dp"
-            android:hint="Precio del tour"
-            android:inputType="number"
-            android:singleLine="true"
-            android:layout_marginBottom="16dp" />
-
-        <!-- DURACIÓN CON SPINNER -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Duración"
-            android:textStyle="bold"
-            android:labelFor="@id/sp_tour_duracion" />
-
-        <Spinner
-            android:id="@+id/sp_tour_duracion"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="16dp" />
-
-        <!-- RECOMENDACIONES -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Recomendaciones"
-            android:textStyle="bold"
-            android:labelFor="@id/et_tour_cuidados" />
-
-        <EditText
-            android:id="@+id/et_tour_cuidados"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="80dp"
-            android:hint="Recomendaciones para los turistas"
-            android:inputType="textMultiLine"
-            android:gravity="top"
-            android:minLines="3"
-            android:layout_marginBottom="16dp" />
-
-        <!-- IMAGEN DEL TOUR -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Imagen del Tour"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
-
-        <ImageView
-            android:id="@+id/img_tour"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:src="@android:drawable/ic_menu_gallery"
-            android:scaleType="centerCrop"
-            android:contentDescription="Imagen del tour"
-            android:layout_marginBottom="12dp" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginBottom="4dp">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <Button
-                android:id="@+id/btn_imagen"
-                android:layout_width="wrap_content"
+            <!-- Información del Tour -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/PG.Card"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
-                android:text="Seleccionar imagen"
-                android:layout_marginEnd="8dp" />
+                android:layout_margin="4dp">
 
-            <Button
-                android:id="@+id/btn_tomar_foto"
-                android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Información del Tour"
+                        android:textAppearance="@style/PG.CardTitle" />
+
+                    <TextView
+                        style="@style/PG.Label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:text="Nombre del Tour" />
+
+                    <EditText
+                        android:id="@+id/et_tour_titulo"
+                        style="@style/PG.Input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:hint="Ej. Caminata Volcán Arenal"
+                        android:importantForAutofill="no"
+                        android:inputType="textCapSentences"
+                        android:maxLines="1" />
+
+                    <TextView
+                        style="@style/PG.Label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:text="Lugar" />
+
+                    <EditText
+                        android:id="@+id/et_tour_lugar"
+                        style="@style/PG.Input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:hint="Ej. La Fortuna, Alajuela"
+                        android:importantForAutofill="no"
+                        android:inputType="textCapWords"
+                        android:maxLines="1" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="6dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/PG.Label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Precio (USD)" />
+
+                            <EditText
+                                android:id="@+id/et_tour_precio"
+                                style="@style/PG.Input"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:hint="Ej. 65"
+                                android:importantForAutofill="no"
+                                android:inputType="number"
+                                android:maxLines="1" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:layout_weight="1.2"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/PG.Label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Categoría" />
+
+                            <Spinner
+                                android:id="@+id/sp_tour_categoria"
+                                style="@style/PG.Spinner"
+                                android:layout_width="match_parent"
+                                android:layout_height="52dp"
+                                android:layout_marginTop="6dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <TextView
+                        style="@style/PG.Label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:text="Duración" />
+
+                    <Spinner
+                        android:id="@+id/sp_tour_duracion"
+                        style="@style/PG.Spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="6dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Recomendaciones -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/PG.Card"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
-                android:text="Tomar foto" />
+                android:layout_margin="4dp"
+                android:layout_marginTop="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Detalles y Cuidados"
+                        android:textAppearance="@style/PG.CardTitle" />
+
+                    <TextView
+                        style="@style/PG.Label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:text="Recomendaciones para los turistas" />
+
+                    <EditText
+                        android:id="@+id/et_tour_cuidados"
+                        style="@style/PG.Input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:gravity="top|start"
+                        android:hint="Ej. Llevar ropa cómoda, bloqueador solar, agua y zapatos cerrados"
+                        android:importantForAutofill="no"
+                        android:inputType="textMultiLine|textCapSentences"
+                        android:minHeight="104dp"
+                        android:minLines="3"
+                        android:paddingTop="14dp"
+                        android:paddingBottom="14dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Fotografía del Tour -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/PG.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_marginTop="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Imagen del Tour"
+                        android:textAppearance="@style/PG.CardTitle" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Toma una fotografía con la cámara o selecciona una desde tu galería"
+                        android:textColor="@color/pg_text_muted"
+                        android:textSize="13sp" />
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="190dp"
+                        android:layout_marginTop="14dp"
+                        app:cardBackgroundColor="#F8FAFC"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/pg_border"
+                        app:strokeWidth="1dp">
+
+                        <ImageView
+                            android:id="@+id/img_tour"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="Imagen del tour"
+                            android:padding="60dp"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/ic_camera"
+                            app:tint="@color/pg_blue_light" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btn_imagen"
+                            style="@style/PG.Button.OutlineBlue"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="6dp"
+                            android:layout_weight="1"
+                            android:minHeight="48dp"
+                            android:text="Seleccionar imagen"
+                            android:textSize="14sp" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btn_tomar_foto"
+                            style="@style/PG.Button.Blue"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:layout_weight="1"
+                            android:drawableStart="@drawable/ic_camera"
+                            android:drawablePadding="6dp"
+                            android:minHeight="48dp"
+                            android:paddingStart="14dp"
+                            android:paddingEnd="14dp"
+                            android:text="Tomar foto"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/txt_estado_foto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/bg_badge_neutral"
+                        android:fontFamily="sans-serif-medium"
+                        android:gravity="center"
+                        android:paddingStart="14dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="14dp"
+                        android:paddingBottom="5dp"
+                        android:text="Pendiente"
+                        android:textColor="@color/pg_text_muted"
+                        android:textSize="13sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Botones de acción -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
+                android:paddingBottom="16dp">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_cancelar_tour"
+                    style="@style/PG.Button.OutlineGray"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:text="Cancelar" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_guardar_tour"
+                    style="@style/PG.Button.Primary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1.3"
+                    android:text="Guardar Tour" />
+            </LinearLayout>
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/txt_estado_foto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Pendiente"
-            android:textSize="14sp"
-            android:textColor="@android:color/darker_gray"
-            android:layout_marginBottom="20dp" />
-
-        <!-- CATEGORÍA -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Categoría"
-            android:textStyle="bold"
-            android:labelFor="@id/sp_tour_categoria" />
-
-        <Spinner
-            android:id="@+id/sp_tour_categoria"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="24dp" />
-
-        <!-- BOTÓN GUARDAR -->
-        <Button
-            android:id="@+id/btn_guardar_tour"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="180dp"
-            android:minHeight="48dp"
-            android:layout_gravity="center_horizontal"
-            android:text="Guardar Tour"
-            android:textColor="@android:color/white"
-            android:backgroundTint="@color/pg_teal" />
-
-        <!-- BOTÓN CANCELAR -->
-        <Button
-            android:id="@+id/btn_cancelar_tour"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="180dp"
-            android:minHeight="48dp"
-            android:layout_gravity="center_horizontal"
-            android:text="Cancelar"
-            android:layout_marginTop="8dp" />
-
-    </LinearLayout>
-
-</ScrollView>
-
+    </ScrollView>
+</LinearLayout>
