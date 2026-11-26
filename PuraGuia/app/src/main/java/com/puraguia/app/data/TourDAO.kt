@@ -25,7 +25,9 @@ class TourDAO(context: Context) {
         cuidados: String,
         idiomas: List<String> = listOf("Español", "Inglés"),
         imagenPath: String? = null,
-        imagenResName: String = imagenPorCategoria(categoria)
+        imagenResName: String = imagenPorCategoria(categoria),
+        latitud: Double? = null,
+        longitud: Double? = null
     ): Long {
         val valores = ContentValues().apply {
             put(DatabaseHelper.COL_TOUR_GUIA_ID, guiaId)
@@ -41,6 +43,13 @@ class TourDAO(context: Context) {
             put(DatabaseHelper.COL_TOUR_IMAGEN_RES, imagenResName)
             if (imagenPath != null) put(DatabaseHelper.COL_TOUR_IMAGEN_PATH, imagenPath) else putNull(DatabaseHelper.COL_TOUR_IMAGEN_PATH)
             put(DatabaseHelper.COL_TOUR_FECHA_CREACION, System.currentTimeMillis())
+            if (latitud != null && longitud != null) {
+                put(DatabaseHelper.COL_TOUR_LATITUD, latitud)
+                put(DatabaseHelper.COL_TOUR_LONGITUD, longitud)
+            } else {
+                putNull(DatabaseHelper.COL_TOUR_LATITUD)
+                putNull(DatabaseHelper.COL_TOUR_LONGITUD)
+            }
         }
         return try {
             helper.writableDatabase.insertOrThrow(DatabaseHelper.TABLA_TOURS, null, valores)
@@ -144,7 +153,9 @@ class TourDAO(context: Context) {
         categoria: String,
         duracion: String,
         cuidados: String,
-        imagenPath: String? = null
+        imagenPath: String? = null,
+        latitud: Double? = null,
+        longitud: Double? = null
     ): Boolean {
         val valores = ContentValues().apply {
             put(DatabaseHelper.COL_TOUR_TITULO, titulo.trim())
@@ -157,6 +168,10 @@ class TourDAO(context: Context) {
             if (imagenPath != null) {
                 put(DatabaseHelper.COL_TOUR_IMAGEN_PATH, imagenPath)
             }
+            if (latitud != null && longitud != null) {
+                put(DatabaseHelper.COL_TOUR_LATITUD, latitud)
+                put(DatabaseHelper.COL_TOUR_LONGITUD, longitud)
+            }
         }
         return try {
             val filas = helper.writableDatabase.update(
@@ -166,6 +181,29 @@ class TourDAO(context: Context) {
                 arrayOf(id.toString())
             )
             filas > 0
+        } catch (e: SQLiteException) {
+            false
+        }
+    }
+
+    /** Actualiza o limpia únicamente las coordenadas GPS de un tour existente. */
+    fun actualizarUbicacion(id: Int, latitud: Double?, longitud: Double?): Boolean {
+        val valores = ContentValues().apply {
+            if (latitud != null && longitud != null) {
+                put(DatabaseHelper.COL_TOUR_LATITUD, latitud)
+                put(DatabaseHelper.COL_TOUR_LONGITUD, longitud)
+            } else {
+                putNull(DatabaseHelper.COL_TOUR_LATITUD)
+                putNull(DatabaseHelper.COL_TOUR_LONGITUD)
+            }
+        }
+        return try {
+            helper.writableDatabase.update(
+                DatabaseHelper.TABLA_TOURS,
+                valores,
+                "${DatabaseHelper.COL_TOUR_ID} = ?",
+                arrayOf(id.toString())
+            ) > 0
         } catch (e: SQLiteException) {
             false
         }
@@ -216,6 +254,8 @@ class TourDAO(context: Context) {
         val idxOrig = c.getColumnIndexOrThrow(DatabaseHelper.COL_TOUR_PRECIO_ORIGINAL)
         val idxDesc = c.getColumnIndexOrThrow(DatabaseHelper.COL_TOUR_DESCUENTO)
         val idxImgPath = c.getColumnIndexOrThrow(DatabaseHelper.COL_TOUR_IMAGEN_PATH)
+        val idxLat = c.getColumnIndexOrThrow(DatabaseHelper.COL_TOUR_LATITUD)
+        val idxLon = c.getColumnIndexOrThrow(DatabaseHelper.COL_TOUR_LONGITUD)
         val imgResName = c.getString(c.getColumnIndexOrThrow(DatabaseHelper.COL_TOUR_IMAGEN_RES))
 
         return Tour(
@@ -234,7 +274,9 @@ class TourDAO(context: Context) {
             imagen = resolverDrawable(imgResName),
             imagenPath = if (c.isNull(idxImgPath)) null else c.getString(idxImgPath),
             precioOriginal = if (c.isNull(idxOrig)) null else c.getInt(idxOrig),
-            descuento = if (c.isNull(idxDesc)) null else c.getInt(idxDesc)
+            descuento = if (c.isNull(idxDesc)) null else c.getInt(idxDesc),
+            latitud = if (c.isNull(idxLat)) null else c.getDouble(idxLat),
+            longitud = if (c.isNull(idxLon)) null else c.getDouble(idxLon)
         )
     }
 

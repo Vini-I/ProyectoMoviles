@@ -50,6 +50,53 @@ class DatabaseHelper private constructor(context: Context) :
             migrarTablaMetodosPagoV4(db)
             sembrarSinpeDemoSiVacio(db)
         }
+        if (oldVersion < 5) {
+            migrarTablaToursV5(db)
+        }
+    }
+
+    private fun migrarTablaToursV5(db: SQLiteDatabase) {
+        val columnasExistentes = mutableSetOf<String>()
+        db.rawQuery("PRAGMA table_info($TABLA_TOURS)", null).use { cursor ->
+            val idx = cursor.getColumnIndex("name")
+            while (cursor.moveToNext()) {
+                if (idx >= 0) columnasExistentes.add(cursor.getString(idx).lowercase())
+            }
+        }
+        val nuevasColumnas = listOf(
+            COL_TOUR_LATITUD to "REAL",
+            COL_TOUR_LONGITUD to "REAL"
+        )
+        nuevasColumnas.forEach { (col, def) ->
+            if (!columnasExistentes.contains(col)) {
+                db.execSQL("ALTER TABLE $TABLA_TOURS ADD COLUMN $col $def")
+            }
+        }
+        sembrarCoordenadasToursDemoSiVacio(db)
+    }
+
+    private fun sembrarCoordenadasToursDemoSiVacio(db: SQLiteDatabase) {
+        val coordenadasDemo = listOf(
+            Triple("Tour Volcán Arenal & Aguas Termales", 10.4626, -84.7032),
+            Triple("Canopy Tour Monteverde", 10.3009, -84.8255),
+            Triple("Safari Wildlife Tortuguero", 10.5419, -83.5024),
+            Triple("Playas del Caribe", 9.6547, -82.7539),
+            Triple("Caminata Volcán Poás", 10.1978, -84.2306),
+            Triple("Aventura en Tirolesa Guanacaste", 10.8303, -85.3240),
+            Triple("Tour del Café & Plantaciones", 10.0986, -84.3782)
+        )
+        coordenadasDemo.forEach { (titulo, lat, lon) ->
+            val cv = ContentValues().apply {
+                put(COL_TOUR_LATITUD, lat)
+                put(COL_TOUR_LONGITUD, lon)
+            }
+            db.update(
+                TABLA_TOURS,
+                cv,
+                "$COL_TOUR_TITULO = ? AND ($COL_TOUR_LATITUD IS NULL OR $COL_TOUR_LONGITUD IS NULL)",
+                arrayOf(titulo)
+            )
+        }
     }
 
     private fun migrarTablaMetodosPagoV4(db: SQLiteDatabase) {
@@ -204,7 +251,8 @@ class DatabaseHelper private constructor(context: Context) :
                 rating = 4.9, resenasCount = 342,
                 precioOriginal = 75, descuento = 20,
                 imagenResName = "tour_volcan",
-                fecha = ahora - 86_400_000L * 7
+                fecha = ahora - 86_400_000L * 7,
+                latitud = 10.4626, longitud = -84.7032
             )
             val t2 = insertarTourSeed(
                 db, idAna,
@@ -217,7 +265,8 @@ class DatabaseHelper private constructor(context: Context) :
                 rating = 4.9, resenasCount = 218,
                 precioOriginal = null, descuento = null,
                 imagenResName = "tour_canopy",
-                fecha = ahora - 86_400_000L * 6
+                fecha = ahora - 86_400_000L * 6,
+                latitud = 10.3009, longitud = -84.8255
             )
             val t3 = insertarTourSeed(
                 db, idCarlos,
@@ -230,7 +279,8 @@ class DatabaseHelper private constructor(context: Context) :
                 rating = 4.8, resenasCount = 156,
                 precioOriginal = null, descuento = null,
                 imagenResName = "bg_tour_selva",
-                fecha = ahora - 86_400_000L * 5
+                fecha = ahora - 86_400_000L * 5,
+                latitud = 10.5419, longitud = -83.5024
             )
             val t4 = insertarTourSeed(
                 db, idMaria,
@@ -243,7 +293,8 @@ class DatabaseHelper private constructor(context: Context) :
                 rating = 4.7, resenasCount = 98,
                 precioOriginal = null, descuento = null,
                 imagenResName = "bg_tour_playa",
-                fecha = ahora - 86_400_000L * 4
+                fecha = ahora - 86_400_000L * 4,
+                latitud = 9.6547, longitud = -82.7539
             )
             insertarTourSeed(
                 db, idAna,
@@ -256,7 +307,8 @@ class DatabaseHelper private constructor(context: Context) :
                 rating = 4.6, resenasCount = 120,
                 precioOriginal = 55, descuento = 18,
                 imagenResName = "tour_volcan",
-                fecha = ahora - 86_400_000L * 3
+                fecha = ahora - 86_400_000L * 3,
+                latitud = 10.1978, longitud = -84.2306
             )
             insertarTourSeed(
                 db, idPuraVida,
@@ -269,7 +321,8 @@ class DatabaseHelper private constructor(context: Context) :
                 rating = 4.8, resenasCount = 187,
                 precioOriginal = null, descuento = null,
                 imagenResName = "tour_canopy",
-                fecha = ahora - 86_400_000L * 2
+                fecha = ahora - 86_400_000L * 2,
+                latitud = 10.8303, longitud = -85.3240
             )
             insertarTourSeed(
                 db, idCarlos,
@@ -282,7 +335,8 @@ class DatabaseHelper private constructor(context: Context) :
                 rating = 4.7, resenasCount = 189,
                 precioOriginal = null, descuento = null,
                 imagenResName = "bg_tour_selva",
-                fecha = ahora - 86_400_000L
+                fecha = ahora - 86_400_000L,
+                latitud = 10.0986, longitud = -84.3782
             )
 
             // 3. Reseñas iniciales
@@ -388,7 +442,9 @@ class DatabaseHelper private constructor(context: Context) :
         precioOriginal: Int?,
         descuento: Int?,
         imagenResName: String,
-        fecha: Long
+        fecha: Long,
+        latitud: Double? = null,
+        longitud: Double? = null
     ): Int {
         val cv = ContentValues().apply {
             put(COL_TOUR_GUIA_ID, guiaId)
@@ -406,6 +462,8 @@ class DatabaseHelper private constructor(context: Context) :
             put(COL_TOUR_IMAGEN_RES, imagenResName)
             putNull(COL_TOUR_IMAGEN_PATH)
             put(COL_TOUR_FECHA_CREACION, fecha)
+            if (latitud != null) put(COL_TOUR_LATITUD, latitud) else putNull(COL_TOUR_LATITUD)
+            if (longitud != null) put(COL_TOUR_LONGITUD, longitud) else putNull(COL_TOUR_LONGITUD)
         }
         return db.insert(TABLA_TOURS, null, cv).toInt()
     }
@@ -537,7 +595,7 @@ class DatabaseHelper private constructor(context: Context) :
 
     companion object {
         const val DB_NAME = "pura_guia.db"
-        const val DB_VERSION = 4
+        const val DB_VERSION = 5
 
         // ---------- Tabla: usuarios ----------
         const val TABLA_USUARIOS = "usuarios"
@@ -574,6 +632,8 @@ class DatabaseHelper private constructor(context: Context) :
         const val COL_TOUR_IMAGEN_RES = "imagen_res_name"
         const val COL_TOUR_IMAGEN_PATH = "imagen_path"
         const val COL_TOUR_FECHA_CREACION = "fecha_creacion"
+        const val COL_TOUR_LATITUD = "latitud"
+        const val COL_TOUR_LONGITUD = "longitud"
 
         // ---------- Tabla: conversaciones ----------
         const val TABLA_CONVERSACIONES = "conversaciones"
@@ -684,6 +744,8 @@ class DatabaseHelper private constructor(context: Context) :
                 "$COL_TOUR_IMAGEN_RES TEXT NOT NULL DEFAULT 'tour_volcan', " +
                 "$COL_TOUR_IMAGEN_PATH TEXT, " +
                 "$COL_TOUR_FECHA_CREACION INTEGER NOT NULL DEFAULT 0, " +
+                "$COL_TOUR_LATITUD REAL, " +
+                "$COL_TOUR_LONGITUD REAL, " +
                 "FOREIGN KEY ($COL_TOUR_GUIA_ID) REFERENCES $TABLA_USUARIOS($COL_ID) ON DELETE CASCADE" +
                 ")"
 

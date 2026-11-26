@@ -18,8 +18,12 @@ data class Tour(
     @DrawableRes val imagen: Int,
     val imagenPath: String? = null,
     val precioOriginal: Int? = null,
-    val descuento: Int? = null
-)
+    val descuento: Int? = null,
+    val latitud: Double? = null,
+    val longitud: Double? = null
+) {
+    val tieneUbicacionGps: Boolean get() = latitud != null && longitud != null
+}
 
 data class Chat(
     val id: Long,
