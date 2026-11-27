@@ -178,12 +178,12 @@
                     android:minHeight="44dp" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/container_resultados"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_resultados"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:orientation="vertical" />
+                android:nestedScrollingEnabled="false" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

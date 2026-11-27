@@ -14,10 +14,12 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.puraguia.app.R
 import com.puraguia.app.data.TourDAO
 import com.puraguia.app.model.Tour
-import com.puraguia.app.ui.common.TourCardFactory
+import com.puraguia.app.ui.common.TourAdapter
 import com.puraguia.app.ui.tour.TourDetailActivity
 import com.puraguia.app.util.ChipGrid
 import com.puraguia.app.util.dp
@@ -36,6 +38,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     private lateinit var spinnerOrden: Spinner
     private lateinit var layoutFiltrosActivos: View
     private lateinit var containerFiltrosActivos: LinearLayout
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var tourAdapter: TourAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -46,6 +50,19 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         spinnerOrden = view.findViewById(R.id.spinner_orden)
         layoutFiltrosActivos = view.findViewById(R.id.layout_filtros_activos)
         containerFiltrosActivos = view.findViewById(R.id.container_filtros_activos)
+        recyclerView = view.findViewById(R.id.rv_resultados)
+
+        tourAdapter = TourAdapter { tour ->
+            startActivity(
+                TourDetailActivity.createIntent(
+                    requireContext(),
+                    tour.id
+                )
+            )
+        }
+
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = tourAdapter
 
         val btnLimpiar = view.findViewById<TextView>(R.id.btn_limpiar_filtros)
         btnLimpiar.paintFlags = btnLimpiar.paintFlags or Paint.UNDERLINE_TEXT_FLAG
@@ -161,16 +178,11 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private fun mostrarResultados(tours: List<Tour>) {
         val vista = view ?: return
+
         vista.findViewById<TextView>(R.id.txt_resultados).text =
-            if (tours.size == 1) "1 resultado" else "${tours.size} resultados"
-        val contenedor = vista.findViewById<LinearLayout>(R.id.container_resultados)
-        contenedor.removeAllViews()
-        tours.forEach { tour ->
-            contenedor.addView(
-                TourCardFactory.crearFila(layoutInflater, contenedor, tour) {
-                    startActivity(TourDetailActivity.createIntent(requireContext(), it.id))
-                }
-            )
-        }
+            if (tours.size == 1) "1 resultado"
+            else "${tours.size} resultados"
+
+        tourAdapter.actualizarTours(tours)
     }
 }
